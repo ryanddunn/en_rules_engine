@@ -14,6 +14,21 @@
     include 'config.php';
 
 
+    function buildTagList($rule_id, $servername, $username, $password, $dbname)
+    {        
+        $tag_array = array();
+        $conn_a = new mysqli($servername, $username, $password, $dbname);
+        if ($conn_a->connect_error) {die("Connection failed: " . $conn_a->connect_error); }
+        $result = $conn_a->query("SELECT tag_name FROM Actions where rule_id=" . $rule_id);
+        if ($result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) {
+                array_push($tag_array, $row["tag_name"]);        
+            }
+        }            
+        $conn_a->close(); 
+        return $tag_array;
+    }
+
     // A global exception handler for our program so that error messages all go to the console
     function en_exception_handler($exception)
     {
@@ -33,7 +48,6 @@
 
     // ======================================================================================
     // ======================================================================================
-
     if($dev_mode){
         $client = new Client(array('token' => $authToken, 'sandbox' => $dev_mode));
     }else{
@@ -54,20 +68,6 @@
         exit(1);
     }
 
-
-/**
-
-$result = $conn->query("SELECT * FROM Users where id=" . $user_id);
-if ($result->num_rows > 0) {
-    while($row = $result->fetch_assoc()) {
-        //echo "id: " . $row["id"]. " - Name: " . $row["name"]. "\n";
-    }
-} 
-
-*/
-
-
-
     $noteStore = $client->getNoteStore();
 
     // ===============================================
@@ -78,23 +78,34 @@ if ($result->num_rows > 0) {
     $filter = new NoteFilter();
 
     // pull form DB for each rule
-    $filter->words = "dunn.ryan@gmail.com";
-    $filter->notebookGuid =  "8968810a-f5e7-4aa8-9c7a-14bfe1beda0f"; // bound to discord notebook, sandbox
-    $notes_result = $client->getNoteStore()->findNotes($filter, 0, 10);
-    print "Search Results: " . count($notes_result->notes) . "\n";
-    $notes = $notes_result->notes;
-    foreach ($notes as $note) {
-        //print_r($note);
-        echo "Note: " . $note->title . " [" . $note->guid . "]" . "\n";
-        $updated_note = new Note();
-        $updated_note->guid = $note->guid; // required field
-        $updated_note->title = $note->title." (.)"; // required field
-        $updated_note->tagGuids = $note->tagGuids; // keep the same tags in place
-        
-        // create a list of tags to be applied from the rule in the db
-        $updated_note->tagNames = $new_tags = array("Ryan Dunn","Automagic"); // add new tags via string
-        $returnedNote = $noteStore->updateNote($updated_note);
-        //print "update note with GUID: " . $returnedNote->guid . "\n";
+
+    $rules_result = $conn->query("SELECT * FROM Rules where user_id=" . $user_id);
+    if ($rules_result->num_rows > 0) {
+        while($row = $rules_result->fetch_assoc()) {
+                // build the list of tags to apply to the to the note when the search term is found
+                $tag_array = buildTagList($row["id"], $servername, $username, $password, $dbname);
+            
+                $filter->words = $row["search_term"];
+
+                        //$filter->words = "dunn.ryan@gmail.com";
+                        $filter->notebookGuid =  "8968810a-f5e7-4aa8-9c7a-14bfe1beda0f"; // bound to discord notebook, sandbox
+                        $notes_result = $client->getNoteStore()->findNotes($filter, 0, 10);
+                        print "Search Results: " . count($notes_result->notes) . " for term [".$row["search_term"]."] \n";
+                        $notes = $notes_result->notes;
+                        foreach ($notes as $note) {
+                            echo "... Note: " . $note->title . " [" . $note->guid . "]" . "\n";
+                            $updated_note = new Note();
+                            $updated_note->guid = $note->guid; // required field
+                            $updated_note->title = $note->title."*"; // required field
+                            $updated_note->tagGuids = $note->tagGuids; // keep the same tags in place
+
+                            // create a list of tags to be applied from the rule in the db
+                            //$updated_note->tagNames = $new_tags = array("Ryan Dunn","Automagic"); // add new tags via string
+                            $updated_note->tagNames = $new_tags =  $tag_array; // add new tags via string
+                            $returnedNote = $noteStore->updateNote($updated_note);
+                            //print "update note with GUID: " . $returnedNote->guid . "\n";
+                        }
+        }
     }
 echo "\n";
 
