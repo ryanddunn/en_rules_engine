@@ -11,14 +11,27 @@
         die("Connection failed: " . $conn->connect_error);
     } 
 
-    $user_id = "2";
+    //$user_id = "1"; // sandbox
+    //$user_id = "2"; // production
+    //http://10.0.0.9/en_rules_engine/mgr.php?user=1
+    $user_id = $_GET["user_id"]; 
+
+    if(!isset($_GET["user_id"])){ $user_id = "1"; }
+
+    echo "<h2> User: " . $user_id . "</h2>";
+
+    echo "Menu: ";
+    echo "<a href=\"mgr.php\">Main</a> |  ";    
+    echo "<a href=\"mgr_rule_add.php?user_id=".$user_id."\">Add Rule</a> ";    
+    echo "<hr>";
 
     $rules_result = $conn->query("SELECT * FROM Rules where user_id=" . $user_id);
     if ($rules_result->num_rows > 0) {
         while($row = $rules_result->fetch_assoc()) {
             echo "<b>Rule " . $row["id"] . " - " . $row["title"] . "</b></br>\n";
-            echo "... Search Term: " . $row["search_term"] ."</br>\n";
-            echo "... User: " . $row["user_id"] ."<br>\n";
+            echo "... Search Term: " . $row["search_term"];
+            echo " (<a href=\"mgr_action_add.php?rule_id=".$row["id"]."&user_id=".$user_id."\">Add Action</a>)<br \>";
+            //echo "... User: " . $row["user_id"] ."<br>\n";
             
             $action_result = $conn->query("SELECT * FROM Actions where rule_id=" . $row["id"]);
             if ($action_result->num_rows > 0) {
