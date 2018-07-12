@@ -84,7 +84,7 @@
         while($row = $rules_result->fetch_assoc()) {
                 // build the list of tags to apply to the to the note when the search term is found
                 $tag_array = buildTagList($row["id"], $servername, $username, $password, $dbname);
-                $filter->words = $row["search_term"];
+                $filter->words = "\"" . $row["search_term"] . "\"";
                 $filter->notebookGuid =  $notebook_working;
                 $notes_result = $client->getNoteStore()->findNotes($filter, 0, 10);
                 print "Search Results: " . count($notes_result->notes) . " for term [".$row["search_term"]."] \n";

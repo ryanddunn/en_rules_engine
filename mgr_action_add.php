@@ -18,12 +18,11 @@
     echo "<a href=\"mgr_rule_add.php?user_id=".$user_id."\">Add Rule</a> ";    
     echo "<hr>";
 
-    $no_errors = false;
+    $no_errors = true;
 
     if (empty($_POST["action"])){ // --------- show blank form
-
         ?>
-        <form action="mgr_action_add.php" method="post">
+        <form action="mgr_action_add.php?user_id=<?php echo $user_id; ?>" method="post">
             #1 Tag Name: <input type="text" name="tag_name_1"><br>
             #1 Action Type: <input type="text" name="tag_type_1" value="tag"><br>
             <hr>
@@ -45,13 +44,12 @@
             <input type="submit">
         </form>        
         <?php
-        
     }else{ // ----- process form and redirect to mgr.php
         echo "User ID: " . $_POST["user_id"] . "<br />";
         echo "Rule ID: " . $_POST["rule_id"] . "<br />";
         echo "Hidden Action: " . $_POST["action"] . "<br />";
         
-        if(isset($_POST['tag_name_1'])){
+        if(strlen($_POST['tag_name_1'])>1){
             // add the new ACTION
             $sql =  "INSERT INTO Actions " .
                 "(id, rule_id, type, tag_name, nb_guid) VALUES " .
@@ -62,9 +60,9 @@
                 $no_errors = false;
                 echo "Error: " . $sql . "<br>" . $conn->error;
             } 
-            $conn->close();               
+                        
         }
-        if(isset($_POST['tag_name_2'])){
+        if(strlen($_POST['tag_name_2'])>1){
             // add the new ACTION
             $sql =  "INSERT INTO Actions " .
                 "(id, rule_id, type, tag_name, nb_guid) VALUES " .
@@ -75,9 +73,9 @@
                 $no_errors = false;
                 echo "Error: " . $sql . "<br>" . $conn->error;
             } 
-            $conn->close();              
+                     
         }
-        if(isset($_POST['tag_name_3'])){
+        if(strlen($_POST['tag_name_3'])>1){
             // add the new ACTION
             $sql =  "INSERT INTO Actions " .
                 "(id, rule_id, type, tag_name, nb_guid) VALUES " .
@@ -88,9 +86,9 @@
                 $no_errors = false;
                 echo "Error: " . $sql . "<br>" . $conn->error;
             } 
-            $conn->close();              
+                        
         }
-        if(isset($_POST['tag_name_4'])){
+        if(strlen($_POST['tag_name_4'])>1){
             // add the new ACTION
             $sql =  "INSERT INTO Actions " .
                 "(id, rule_id, type, tag_name, nb_guid) VALUES " .
@@ -101,9 +99,9 @@
                 $no_errors = false;
                 echo "Error: " . $sql . "<br>" . $conn->error;
             } 
-            $conn->close();              
+                         
         }
-        if(isset($_POST['tag_name_5'])){
+        if(strlen($_POST['tag_name_5'])>1){
             // add the new ACTION
             $sql =  "INSERT INTO Actions " .
                 "(id, rule_id, type, tag_name, nb_guid) VALUES " .
@@ -114,14 +112,14 @@
                 $no_errors = false;
                 echo "Error: " . $sql . "<br>" . $conn->error;
             } 
-            $conn->close();             
+                      
         }
         
         if($no_errors){
             echo "<script>window.location.replace(\"mgr.php?user_id=".$user_id."\");</script>";
         }
         // if successful, send the user back to the main rules page
-
+        $conn->close();   
     }   
 
     

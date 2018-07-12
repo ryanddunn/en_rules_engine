@@ -24,7 +24,7 @@
     if (empty($_POST["action"])){ // --------- show blank form
 
         ?>
-        <form action="mgr_rule_add.php" method="post">
+        <form action="mgr_rule_add.php?user_id=<?php echo $user_id; ?>" method="post">
             Rule Name: <input type="text" name="rule_name"><br>
             Search Term: <input type="text" name="search_term"><br>
             <input type="hidden" name="action" value="add_rule">
