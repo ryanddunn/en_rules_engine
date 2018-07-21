@@ -5,14 +5,21 @@
     use EDAM\Error\EDAMUserException, EDAM\Error\EDAMErrorCode;
     use Evernote\Client;
 
+    include 'config.php';
     ini_set("include_path", ini_get("include_path") . PATH_SEPARATOR . "lib" . PATH_SEPARATOR);
+    require_once $app_dir.'lib/autoload.php';
+    require_once $app_dir.'lib/Evernote/Client.php';
+    require_once $app_dir.'lib/packages/Errors/Errors_types.php';
+    require_once $app_dir.'lib/packages/Types/Types_types.php';
+    require_once $app_dir.'lib/packages/Limits/Limits_constants.php';
+    
+/**
     require_once 'autoload.php';
     require_once 'Evernote/Client.php';
     require_once 'packages/Errors/Errors_types.php';
     require_once 'packages/Types/Types_types.php';
     require_once 'packages/Limits/Limits_constants.php';
-    include 'config.php';
-
+*/
 
     function buildTagList($rule_id, $servername, $username, $password, $dbname)
     {        
