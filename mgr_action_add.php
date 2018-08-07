@@ -1,21 +1,18 @@
 <?php
-    $servername = "localhost";
-    $username = "root";
-    $password = "appl35!@";
-    $dbname = "en_RulesEngine";
+    include 'config.php';
 
     // Create connection
     $conn = new mysqli($servername, $username, $password, $dbname);
     // Check connection
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
-    } 
-    $user_id = $_GET["user_id"]; 
+    }
+    $user_id = $_GET["user_id"];
     echo "<h2> User: " . $_GET["user_id"] . "</h2>";
 
     echo "Menu: ";
-    echo "<a href=\"mgr.php?user_id=".$user_id."\">Main</a> |  ";    
-    echo "<a href=\"mgr_rule_add.php?user_id=".$user_id."\">Add Rule</a> ";    
+    echo "<a href=\"mgr.php?user_id=".$user_id."\">Main</a> |  ";
+    echo "<a href=\"mgr_rule_add.php?user_id=".$user_id."\">Add Rule</a> ";
     echo "<hr>";
 
     $no_errors = true;
@@ -42,25 +39,25 @@
             Rule ID: <input type="text" name="rule_id" value="<?php echo $_GET["rule_id"] ?>"><br>
             Action: <input type="text" name="action" value="add_action"><br>
             <input type="submit">
-        </form>        
+        </form>
         <?php
     }else{ // ----- process form and redirect to mgr.php
         echo "User ID: " . $_POST["user_id"] . "<br />";
         echo "Rule ID: " . $_POST["rule_id"] . "<br />";
         echo "Hidden Action: " . $_POST["action"] . "<br />";
-        
+
         if(strlen($_POST['tag_name_1'])>1){
             // add the new ACTION
             $sql =  "INSERT INTO Actions " .
                 "(id, rule_id, type, tag_name, nb_guid) VALUES " .
                 "(NULL, '".$_POST["rule_id"]."', '".$_POST["tag_type_1"] .
                 "', '".$_POST["tag_name_1"]."', '')";
-            if ($conn->query($sql) === TRUE) { } 
+            if ($conn->query($sql) === TRUE) { }
             else {
                 $no_errors = false;
                 echo "Error: " . $sql . "<br>" . $conn->error;
-            } 
-                        
+            }
+
         }
         if(strlen($_POST['tag_name_2'])>1){
             // add the new ACTION
@@ -68,12 +65,12 @@
                 "(id, rule_id, type, tag_name, nb_guid) VALUES " .
                 "(NULL, '".$_POST["rule_id"]."', '".$_POST["tag_type_2"] .
                 "', '".$_POST["tag_name_2"]."', '')";
-            if ($conn->query($sql) === TRUE) { } 
+            if ($conn->query($sql) === TRUE) { }
             else {
                 $no_errors = false;
                 echo "Error: " . $sql . "<br>" . $conn->error;
-            } 
-                     
+            }
+
         }
         if(strlen($_POST['tag_name_3'])>1){
             // add the new ACTION
@@ -81,12 +78,12 @@
                 "(id, rule_id, type, tag_name, nb_guid) VALUES " .
                 "(NULL, '".$_POST["rule_id"]."', '".$_POST["tag_type_3"] .
                 "', '".$_POST["tag_name_3"]."', '')";
-            if ($conn->query($sql) === TRUE) { } 
+            if ($conn->query($sql) === TRUE) { }
             else {
                 $no_errors = false;
                 echo "Error: " . $sql . "<br>" . $conn->error;
-            } 
-                        
+            }
+
         }
         if(strlen($_POST['tag_name_4'])>1){
             // add the new ACTION
@@ -94,12 +91,12 @@
                 "(id, rule_id, type, tag_name, nb_guid) VALUES " .
                 "(NULL, '".$_POST["rule_id"]."', '".$_POST["tag_type_4"] .
                 "', '".$_POST["tag_name_4"]."', '')";
-            if ($conn->query($sql) === TRUE) { } 
+            if ($conn->query($sql) === TRUE) { }
             else {
                 $no_errors = false;
                 echo "Error: " . $sql . "<br>" . $conn->error;
-            } 
-                         
+            }
+
         }
         if(strlen($_POST['tag_name_5'])>1){
             // add the new ACTION
@@ -107,20 +104,17 @@
                 "(id, rule_id, type, tag_name, nb_guid) VALUES " .
                 "(NULL, '".$_POST["rule_id"]."', '".$_POST["tag_type_5"] .
                 "', '".$_POST["tag_name_5"]."', '')";
-            if ($conn->query($sql) === TRUE) { } 
+            if ($conn->query($sql) === TRUE) { }
             else {
                 $no_errors = false;
                 echo "Error: " . $sql . "<br>" . $conn->error;
-            } 
-                      
+            }
+
         }
-        
+
         if($no_errors){
             echo "<script>window.location.replace(\"mgr.php?user_id=".$user_id."\");</script>";
         }
         // if successful, send the user back to the main rules page
-        $conn->close();   
-    }   
-
-    
-
+        $conn->close();
+    }

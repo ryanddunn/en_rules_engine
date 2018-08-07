@@ -12,27 +12,20 @@
     require_once $app_dir.'lib/packages/Errors/Errors_types.php';
     require_once $app_dir.'lib/packages/Types/Types_types.php';
     require_once $app_dir.'lib/packages/Limits/Limits_constants.php';
-    
-/**
-    require_once 'autoload.php';
-    require_once 'Evernote/Client.php';
-    require_once 'packages/Errors/Errors_types.php';
-    require_once 'packages/Types/Types_types.php';
-    require_once 'packages/Limits/Limits_constants.php';
-*/
+
 
     function buildTagList($rule_id, $servername, $username, $password, $dbname)
-    {        
+    {
         $tag_array = array();
         $conn_a = new mysqli($servername, $username, $password, $dbname);
         if ($conn_a->connect_error) {die("Connection failed: " . $conn_a->connect_error); }
         $result = $conn_a->query("SELECT tag_name FROM Actions where rule_id=" . $rule_id);
         if ($result->num_rows > 0) {
             while($row = $result->fetch_assoc()) {
-                array_push($tag_array, $row["tag_name"]);        
+                array_push($tag_array, $row["tag_name"]);
             }
-        }            
-        $conn_a->close(); 
+        }
+        $conn_a->close();
         return $tag_array;
     }
 
@@ -84,7 +77,7 @@
     $client = new Client(array('token' => $authToken,'sandbox' => $dev_mode));
     $filter = new NoteFilter();
 
-    // pull form DB for each rule
+    // pull from DB for each rule
 
     $rules_result = $conn->query("SELECT * FROM Rules where user_id=" . $user_id);
     if ($rules_result->num_rows > 0) {
@@ -94,9 +87,19 @@
                 $filter->words = "\"" . $row["search_term"] . "\"";
                 $filter->notebookGuid =  $notebook_working;
                 $notes_result = $client->getNoteStore()->findNotes($filter, 0, 10);
-                print "Search Results: " . count($notes_result->notes) . " for term [".$row["search_term"]."] \n";
+                // print "Search Results: " . count($notes_result->notes) .
+                // " for term [".$row["search_term"]."] \n";
                 $notes = $notes_result->notes;
+                $counter = 0;
+
                 foreach ($notes as $note) {
+                    if($counter == 0)
+                    {
+                    	print count($notes_result->notes) . " notes with term " .
+                            $row["search_term"] . "] \n";
+                    }
+			        $counter ++;
+
                     echo "... Note: " . $note->title . " [" . $note->guid . "]" . "\n";
                     $updated_note = new Note();
                     $updated_note->guid = $note->guid; // required field
@@ -107,10 +110,26 @@
                     //$updated_note->tagNames = $new_tags = array("Ryan Dunn","Automagic"); // add new tags via string
                     $updated_note->tagNames = $new_tags =  $tag_array; // add new tags via string
                     $returnedNote = $noteStore->updateNote($updated_note);
+
+                    //$slack_string = "EN Rules Engine - [".$note->title."] has been updated. [" .
+                    //    "https://www.evernote.com/Home.action#n=]";
+
+//                        "https://www.evernote.com/Home.action#n=\"".$note->guid ."]";
+
+                    // catch the output so it stay's silent
+                    //$output = shell_exec("curl -X POST --data-urlencode 'payload={\"channel\": \"#notifications\", \"username\": \"webhookbot\", \"text\": \"".$slack_string."\", \"icon_emoji\": \":robot_face:\"}' https://hooks.slack.com/services/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");
+
                     //print "update note with GUID: " . $returnedNote->guid . "\n";
                 }
         }
     }
 echo "\n";
 
-$conn->close(); 
+
+                    //$slack_string = "EN Rules Engine";
+
+                    // catch the output so it stay's silent
+                    //$output = shell_exec("curl -X POST --data-urlencode 'payload={\"channel\": \"#notifications\", \"username\": \"webhookbot\", \"text\": \"".$slack_string."\", \"icon_emoji\": \":robot_face:\"}' https://hooks.slack.com/services/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 &");
+
+
+$conn->close();
