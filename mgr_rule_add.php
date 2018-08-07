@@ -48,7 +48,7 @@
         $sql = "INSERT INTO Rules " .
             "(id, user_id, title, search_term) VALUES " .
             "(NULL, '".$user_id."', '".$_POST["rule_name"]."', '".$_POST["search_term"]."')";
-        echo $sql . "<br>";
+        //echo $sql . "<br>";
 
 
         // if successful, send the user back to the main rules page

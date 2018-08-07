@@ -30,14 +30,13 @@
     $rules_result = $conn->query("SELECT * FROM Rules where user_id=" . $user_id);
     if ($rules_result->num_rows > 0) {
         while($row = $rules_result->fetch_assoc()) {
-            //echo "<b>Rule " . $row["id"] . " - " . $row["title"] . "</b></br>\n";
+            // delete link
             echo "<a href=\"mgr_delete_all.php?user_id=" . $_GET["user_id"]
-                . "&rule_id=" . $row["id"] . "\">[delete]</a> <b>"
-                . truncate($row["search_term"], 30);
-            //echo " (<a href=\"mgr_action_add.php?rule_id=".$row["id"]."&user_id=".$user_id."\">Add Action</a>)";
-            echo " </b>";
-            //(<a href=\"\">Delete ... not done</a>)<br \>";
-            //echo "... User: " . $row["user_id"] ."<br>\n";
+                . "&rule_id=" . $row["id"] . "\">[delete]</a>";
+
+            // note title
+            echo " <textarea readonly rows=1 style=\"border: none; width:500px \">" . $row["search_term"] . "</textarea> ";
+
 
             $action_result = $conn->query("SELECT * FROM Actions where rule_id=" . $row["id"]);
             if ($action_result->num_rows > 0) {

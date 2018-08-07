@@ -79,57 +79,61 @@
 
     // pull from DB for each rule
 
+    // create an entry in the "logs" table for all actions to tracked from this point going forward
+    $sql = "INSERT INTO Logs () VALUES ()"; // just make a timestamped entry in table
+    if ($conn->query($sql) === TRUE) {
+        $log_id = $conn->insert_id;
+    }
+
+    // create a second instance of the connection to DB to support
+    // similateous transactions for log detail insertion
+    $conn2 = $conn;
+
     $rules_result = $conn->query("SELECT * FROM Rules where user_id=" . $user_id);
     if ($rules_result->num_rows > 0) {
         while($row = $rules_result->fetch_assoc()) {
-                // build the list of tags to apply to the to the note when the search term is found
-                $tag_array = buildTagList($row["id"], $servername, $username, $password, $dbname);
-                $filter->words = "\"" . $row["search_term"] . "\"";
-                $filter->notebookGuid =  $notebook_working;
-                $notes_result = $client->getNoteStore()->findNotes($filter, 0, 10);
-                // print "Search Results: " . count($notes_result->notes) .
-                // " for term [".$row["search_term"]."] \n";
-                $notes = $notes_result->notes;
-                $counter = 0;
+            // build the list of tags to apply to the to the note when the search term is found
+            $tag_array = buildTagList($row["id"], $servername, $username, $password, $dbname);
+            $filter->words = "\"" . $row["search_term"] . "\"";
+            $filter->notebookGuid =  $notebook_working;
+            $notes_result = $client->getNoteStore()->findNotes($filter, 0, 10);
+            // print "Search Results: " . count($notes_result->notes) .
+            // " for term [".$row["search_term"]."] \n";
+            $notes = $notes_result->notes;
+            $counter = 0;
 
-                foreach ($notes as $note) {
-                    if($counter == 0)
-                    {
-                    	print count($notes_result->notes) . " notes with term " .
-                            $row["search_term"] . "] \n";
-                    }
-			        $counter ++;
-
-                    echo "... Note: " . $note->title . " [" . $note->guid . "]" . "\n";
-                    $updated_note = new Note();
-                    $updated_note->guid = $note->guid; // required field
-                    $updated_note->title = $note->title; // required field
-                    $updated_note->tagGuids = $note->tagGuids; // keep the same tags in place
-
-                    // create a list of tags to be applied from the rule in the db
-                    //$updated_note->tagNames = $new_tags = array("Ryan Dunn","Automagic"); // add new tags via string
-                    $updated_note->tagNames = $new_tags =  $tag_array; // add new tags via string
-                    $returnedNote = $noteStore->updateNote($updated_note);
-
-                    //$slack_string = "EN Rules Engine - [".$note->title."] has been updated. [" .
-                    //    "https://www.evernote.com/Home.action#n=]";
-
-//                        "https://www.evernote.com/Home.action#n=\"".$note->guid ."]";
-
-                    // catch the output so it stay's silent
-                    //$output = shell_exec("curl -X POST --data-urlencode 'payload={\"channel\": \"#notifications\", \"username\": \"webhookbot\", \"text\": \"".$slack_string."\", \"icon_emoji\": \":robot_face:\"}' https://hooks.slack.com/services/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");
-
-                    //print "update note with GUID: " . $returnedNote->guid . "\n";
+            foreach ($notes as $note) {
+                if($counter == 0)
+                {
+                	print count($notes_result->notes) . " notes with term " .
+                        $row["search_term"] . "] \n";
                 }
+		        $counter ++;
+
+                echo "... Note: " . $note->title . " [" . $note->guid . "]" . "\n";
+                $updated_note = new Note();
+                $updated_note->guid = $note->guid; // required field
+                $updated_note->title = $note->title; // required field
+                $updated_note->tagGuids = $note->tagGuids; // keep the same tags in place
+
+                // create a list of tags to be applied from the rule in the db
+                $updated_note->tagNames = $new_tags =  $tag_array; // add new tags via string
+                $returnedNote = $noteStore->updateNote($updated_note);
+
+                // create entry in "logs_detail" table for each note / rule execution
+                $sql = "INSERT INTO Logs_Detail ( log_id, note_guid, note_title, rule_id) VALUES " .
+                    "(" . $log_id . ",'" . $note->guid . "','" . substr($note->title,0,99) . "',".$row["id"].")";
+                $conn2->query($sql);
+
+                // catch the output so it stay's silent
+                //$output = shell_exec("curl -X POST --data-urlencode 'payload={\"channel\": \"#notifications\", \"username\": \"webhookbot\", \"text\": \"".$slack_string."\", \"icon_emoji\": \":robot_face:\"}' https://hooks.slack.com/services/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");
+            }
         }
     }
 echo "\n";
 
-
-                    //$slack_string = "EN Rules Engine";
-
-                    // catch the output so it stay's silent
-                    //$output = shell_exec("curl -X POST --data-urlencode 'payload={\"channel\": \"#notifications\", \"username\": \"webhookbot\", \"text\": \"".$slack_string."\", \"icon_emoji\": \":robot_face:\"}' https://hooks.slack.com/services/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 &");
-
+//$slack_string = "EN Rules Engine";
+// catch the output so it stay's silent
+//$output = shell_exec("curl -X POST --data-urlencode 'payload={\"channel\": \"#notifications\", \"username\": \"webhookbot\", \"text\": \"".$slack_string."\", \"icon_emoji\": \":robot_face:\"}' https://hooks.slack.com/services/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 &");
 
 $conn->close();
