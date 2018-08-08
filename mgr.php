@@ -1,16 +1,16 @@
 <?php
     include 'config.php';
 
-    // Create connection
-    $conn = new mysqli($servername, $username, $password, $dbname);
-    // Check connection
-    if ($conn->connect_error) {
-        die("Connection failed: " . $conn->connect_error);
-    }
-
-    function truncate($string, $length, $dots = "...") {
-        return (strlen($string) > $length) ? substr($string, 0, $length - strlen($dots)) . $dots : $string;
-    }
+    // // Create connection
+    // $conn = new mysqli($servername, $username, $password, $dbname);
+    // // Check connection
+    // if ($conn->connect_error) {
+    //     die("Connection failed: " . $conn->connect_error);
+    // }
+    //
+    // function truncate($string, $length, $dots = "...") {
+    //     return (strlen($string) > $length) ? substr($string, 0, $length - strlen($dots)) . $dots : $string;
+    // }
 
     //$user_id = "1"; // sandbox
     //$user_id = "2"; // production
@@ -21,11 +21,7 @@
         echo "<script>window.location.replace(\"mgr.php?user_id=1\");</script>";
     }
 
-    echo "<h2> User: " . $user_id . "</h2>";
-    echo "Menu: ";
-    echo "<a href=\"mgr.php?" . $_GET["user_id"] . "\">Main</a> |  ";
-    echo "<a href=\"mgr_rule_add.php?user_id=".$user_id."\">Add Rule</a> ";
-    echo "<hr>";
+    include 'inc_menu.php';
 
     $rules_result = $conn->query("SELECT * FROM Rules where user_id=" . $user_id);
     if ($rules_result->num_rows > 0) {
@@ -34,9 +30,11 @@
             echo "<a href=\"mgr_delete_all.php?user_id=" . $_GET["user_id"]
                 . "&rule_id=" . $row["id"] . "\">[delete]</a>";
 
+            echo "<a href=\"mgr_edit_all.php?user_id=" . $_GET["user_id"]
+                . "&rule_id=" . $row["id"] . "\">[edit]</a>";
+
             // note title
             echo " <textarea readonly rows=1 style=\"border: none; width:500px \">" . $row["search_term"] . "</textarea> ";
-
 
             $action_result = $conn->query("SELECT * FROM Actions where rule_id=" . $row["id"]);
             if ($action_result->num_rows > 0) {

@@ -1,5 +1,4 @@
 <?php
-
     // Import the classes that we're going to be using
     use EDAM\Types\Data, EDAM\Types\Note, EDAM\Types\Resource, EDAM\Types\ResourceAttributes;
     use EDAM\Error\EDAMUserException, EDAM\Error\EDAMErrorCode;
@@ -12,7 +11,6 @@
     require_once $app_dir.'lib/packages/Errors/Errors_types.php';
     require_once $app_dir.'lib/packages/Types/Types_types.php';
     require_once $app_dir.'lib/packages/Limits/Limits_constants.php';
-
 
     function buildTagList($rule_id, $servername, $username, $password, $dbname)
     {
@@ -45,7 +43,6 @@
     }
     set_exception_handler('en_exception_handler');
 
-
     // ======================================================================================
     // ======================================================================================
     if($dev_mode){
@@ -64,20 +61,15 @@
              $GLOBALS['EDAM_UserStore_UserStore_CONSTANTS']['EDAM_VERSION_MAJOR'],
              $GLOBALS['EDAM_UserStore_UserStore_CONSTANTS']['EDAM_VERSION_MINOR']);
     //print "Is my Evernote API version up to date?  " . $versionOK . "\n\n";
-    if ($versionOK == 0) {
-        exit(1);
-    }
+    if ($versionOK == 0) { exit(1); }
 
     $noteStore = $client->getNoteStore();
-
     // ===============================================
     if($dev_mode){ echo "*** DEV MODE *** \n"; }
 
     use EDAM\NoteStore\NoteFilter;
     $client = new Client(array('token' => $authToken,'sandbox' => $dev_mode));
     $filter = new NoteFilter();
-
-    // pull from DB for each rule
 
     // create an entry in the "logs" table for all actions to tracked from this point going forward
     $sql = "INSERT INTO Logs () VALUES ()"; // just make a timestamped entry in table
@@ -88,7 +80,9 @@
     // create a second instance of the connection to DB to support
     // similateous transactions for log detail insertion
     $conn2 = $conn;
+    $total_notes_updated = 0;
 
+    // pull from DB for each rule
     $rules_result = $conn->query("SELECT * FROM Rules where user_id=" . $user_id);
     if ($rules_result->num_rows > 0) {
         while($row = $rules_result->fetch_assoc()) {
@@ -97,8 +91,6 @@
             $filter->words = "\"" . $row["search_term"] . "\"";
             $filter->notebookGuid =  $notebook_working;
             $notes_result = $client->getNoteStore()->findNotes($filter, 0, 10);
-            // print "Search Results: " . count($notes_result->notes) .
-            // " for term [".$row["search_term"]."] \n";
             $notes = $notes_result->notes;
             $counter = 0;
 
@@ -108,7 +100,7 @@
                 	print count($notes_result->notes) . " notes with term " .
                         $row["search_term"] . "] \n";
                 }
-		        $counter ++;
+		        $counter ++; $total_notes_updated ++;
 
                 echo "... Note: " . $note->title . " [" . $note->guid . "]" . "\n";
                 $updated_note = new Note();
@@ -124,10 +116,18 @@
                 $sql = "INSERT INTO Logs_Detail ( log_id, note_guid, note_title, rule_id) VALUES " .
                     "(" . $log_id . ",'" . $note->guid . "','" . substr($note->title,0,99) . "',".$row["id"].")";
                 $conn2->query($sql);
+                $conn2->close();
 
                 // catch the output so it stay's silent
                 //$output = shell_exec("curl -X POST --data-urlencode 'payload={\"channel\": \"#notifications\", \"username\": \"webhookbot\", \"text\": \"".$slack_string."\", \"icon_emoji\": \":robot_face:\"}' https://hooks.slack.com/services/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");
             }
+        }
+
+        // delete the log entry if no work was done.
+        if($total_notes_updated == 0)
+        {
+            $sql = "DELETE FROM Logs WHERE id=" . $log_id;
+            $conn->query($sql);
         }
     }
 echo "\n";
