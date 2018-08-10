@@ -33,3 +33,20 @@
 [08-Aug-2018 14:36:59 America/Los_Angeles] PHP Parse error:  syntax error, unexpected '}', expecting ',' or ';' in /home/d3sys0/public_html/en-rules/mgr_edit_all.php on line 93
 [08-Aug-2018 14:38:17 America/Los_Angeles] PHP Parse error:  syntax error, unexpected '}', expecting ',' or ';' in /home/d3sys0/public_html/en-rules/mgr_edit_all.php on line 91
 [08-Aug-2018 14:45:11 America/Los_Angeles] PHP Warning:  mysqli::close(): Couldn't fetch mysqli in /home/d3sys0/public_html/en-rules/rules_engine.php on line 139
+[08-Aug-2018 18:19:36 America/Los_Angeles] PHP Warning:  mysqli::query(): MySQL server has gone away in /home/d3sys0/public_html/en-rules/rules_engine.php on line 130
+[08-Aug-2018 18:19:36 America/Los_Angeles] PHP Warning:  mysqli::query(): Error reading result set's header in /home/d3sys0/public_html/en-rules/rules_engine.php on line 130
+[09-Aug-2018 04:04:35 America/Los_Angeles] PHP Warning:  mysqli::query(): MySQL server has gone away in /home/d3sys0/public_html/en-rules/rules_engine.php on line 130
+[09-Aug-2018 04:04:35 America/Los_Angeles] PHP Warning:  mysqli::query(): Error reading result set's header in /home/d3sys0/public_html/en-rules/rules_engine.php on line 130
+[09-Aug-2018 11:45:11 America/Los_Angeles] PHP Warning:  mysqli::query(): Couldn't fetch mysqli in /home/d3sys0/public_html/en-rules/rules_engine.php on line 118
+[09-Aug-2018 11:45:11 America/Los_Angeles] PHP Warning:  mysqli::close(): Couldn't fetch mysqli in /home/d3sys0/public_html/en-rules/rules_engine.php on line 119
+[09-Aug-2018 11:45:12 America/Los_Angeles] PHP Warning:  mysqli::query(): Couldn't fetch mysqli in /home/d3sys0/public_html/en-rules/rules_engine.php on line 118
+[09-Aug-2018 11:45:12 America/Los_Angeles] PHP Warning:  mysqli::close(): Couldn't fetch mysqli in /home/d3sys0/public_html/en-rules/rules_engine.php on line 119
+[09-Aug-2018 11:45:14 America/Los_Angeles] PHP Warning:  mysqli::query(): Couldn't fetch mysqli in /home/d3sys0/public_html/en-rules/rules_engine.php on line 118
+[09-Aug-2018 11:45:14 America/Los_Angeles] PHP Warning:  mysqli::close(): Couldn't fetch mysqli in /home/d3sys0/public_html/en-rules/rules_engine.php on line 119
+[09-Aug-2018 11:45:14 America/Los_Angeles] PHP Warning:  mysqli::close(): Couldn't fetch mysqli in /home/d3sys0/public_html/en-rules/rules_engine.php on line 139
+[09-Aug-2018 12:05:27 America/Los_Angeles] PHP Warning:  mysqli::query(): MySQL server has gone away in /home/d3sys0/public_html/en-rules/rules_engine.php on line 130
+[09-Aug-2018 12:05:27 America/Los_Angeles] PHP Warning:  mysqli::query(): Error reading result set's header in /home/d3sys0/public_html/en-rules/rules_engine.php on line 130
+[10-Aug-2018 02:50:26 America/Los_Angeles] PHP Warning:  mysqli::query(): MySQL server has gone away in /home/d3sys0/public_html/en-rules/rules_engine.php on line 130
+[10-Aug-2018 02:50:26 America/Los_Angeles] PHP Warning:  mysqli::query(): Error reading result set's header in /home/d3sys0/public_html/en-rules/rules_engine.php on line 130
+[10-Aug-2018 04:35:26 America/Los_Angeles] PHP Warning:  mysqli::query(): MySQL server has gone away in /home/d3sys0/public_html/en-rules/rules_engine.php on line 130
+[10-Aug-2018 04:35:26 America/Los_Angeles] PHP Warning:  mysqli::query(): Error reading result set's header in /home/d3sys0/public_html/en-rules/rules_engine.php on line 130

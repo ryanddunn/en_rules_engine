@@ -82,12 +82,12 @@
                     "nb_guid='".$_POST["action_nb_guid_".$x]."' " .
                     "WHERE id = " . $_POST["action_id_".$x];
                 echo "Action SQL: " .$sql_action;
-                // if ($conn2->query($sql_action) === TRUE) {
-                //
-                // } else {
-                //     echo $sql_action." <br />Error updating Action: " . $conn->error;
-                // }
-                // $conn2->close();
+                if ($conn2->query($sql_action) === TRUE) {
+                
+                } else {
+                    echo $sql_action." <br />Error updating Action: " . $conn->error;
+                }
+                $conn2->close();
             }
         } else {
             echo "Error updating Rules: " . $conn->error;
