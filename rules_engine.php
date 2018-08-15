@@ -111,12 +111,11 @@
                 // create a list of tags to be applied from the rule in the db
                 $updated_note->tagNames = $new_tags =  $tag_array; // add new tags via string
                 $returnedNote = $noteStore->updateNote($updated_note);
-
+                //$conn2 = $conn;
                 // create entry in "logs_detail" table for each note / rule execution
                 $sql = "INSERT INTO Logs_Detail ( log_id, note_guid, note_title, rule_id) VALUES " .
                     "(" . $log_id . ",'" . $note->guid . "','" . substr($note->title,0,99) . "',".$row["id"].")";
                 $conn2->query($sql);
-                $conn2->close();
 
                 // catch the output so it stay's silent
                 //$output = shell_exec("curl -X POST --data-urlencode 'payload={\"channel\": \"#notifications\", \"username\": \"webhookbot\", \"text\": \"".$slack_string."\", \"icon_emoji\": \":robot_face:\"}' https://hooks.slack.com/services/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");
@@ -124,16 +123,14 @@
         }
 
         // delete the log entry if no work was done.
-        if($total_notes_updated == 0)
-        {
+        if($total_notes_updated == 0){
             $sql = "DELETE FROM Logs WHERE id=" . $log_id;
             $conn->query($sql);
         }
     }
-echo "\n";
+    $conn->close();
+    echo "\n";
 
-//$slack_string = "EN Rules Engine";
-// catch the output so it stay's silent
-//$output = shell_exec("curl -X POST --data-urlencode 'payload={\"channel\": \"#notifications\", \"username\": \"webhookbot\", \"text\": \"".$slack_string."\", \"icon_emoji\": \":robot_face:\"}' https://hooks.slack.com/services/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 &");
-
-$conn->close();
+    //$slack_string = "EN Rules Engine";
+    // catch the output so it stay's silent
+    //$output = shell_exec("curl -X POST --data-urlencode 'payload={\"channel\": \"#notifications\", \"username\": \"webhookbot\", \"text\": \"".$slack_string."\", \"icon_emoji\": \":robot_face:\"}' https://hooks.slack.com/services/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 &");

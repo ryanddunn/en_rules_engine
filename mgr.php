@@ -30,8 +30,7 @@
             echo "<a href=\"mgr_delete_all.php?user_id=" . $_GET["user_id"]
                 . "&rule_id=" . $row["id"] . "\">[delete]</a>";
 
-            echo "<a href=\"mgr_edit_all.php?user_id=" . $_GET["user_id"]
-                . "&rule_id=" . $row["id"] . "\">[edit]</a>";
+            echo "<a href=\"mgr_rule_edit.php?rule_id=" . $row["id"] . "\">[edit]</a>";
 
             // note title
             echo " <textarea readonly rows=1 style=\"border: none; width:500px \">" . $row["search_term"] . "</textarea> ";

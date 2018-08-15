@@ -1,5 +1,5 @@
 # Evernote Rules Engine
-This project is a *Rules Engine* for Evernote using their published API.
+This project is a *Rules Engine* for Evernote using their published API. The application is built in a LAMP Stack with a cron job running the automated *Rules Engine*. Currently using web forms, future version I hope to move to a traditional Service Oriented Architecture. 
 
 By using the term *Rules Engine* I'm implying that you can create basic search queries
 and bind simple actions to those queries.

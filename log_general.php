@@ -21,11 +21,7 @@
         echo "<script>window.location.replace(\"mgr.php?user_id=1\");</script>";
     }
 
-    echo "<h2> User: " . $user_id . "</h2>";
-    echo "Menu: ";
-    echo "<a href=\"mgr.php?" . $_GET["user_id"] . "\">Main</a> |  ";
-    echo "<a href=\"mgr_rule_add.php?user_id=".$user_id."\">Add Rule</a> ";
-    echo "<hr>";
+    include 'inc_menu.php';
 
     echo "<ul>";
     $result = $conn->query("SELECT * FROM Logs Order By timestamp DESC Limit 0,20");
