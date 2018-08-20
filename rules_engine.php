@@ -17,7 +17,7 @@
         $tag_array = array();
         $conn_a = new mysqli($servername, $username, $password, $dbname);
         if ($conn_a->connect_error) {die("Connection failed: " . $conn_a->connect_error); }
-        $result = $conn_a->query("SELECT tag_name FROM Actions where rule_id=" . $rule_id);
+        $result = $conn_a->query("SELECT tag_name FROM Actions where type='tag' and rule_id=" . $rule_id);
         if ($result->num_rows > 0) {
             while($row = $result->fetch_assoc()) {
                 array_push($tag_array, $row["tag_name"]);
@@ -25,6 +25,22 @@
         }
         $conn_a->close();
         return $tag_array;
+    }
+
+    function getNewNotebook($rule_id, $servername, $username, $password, $dbname)
+    {
+        $new_nb_guid = "";
+        $conn_a = new mysqli($servername, $username, $password, $dbname);
+        if ($conn_a->connect_error) {die("Connection failed: " . $conn_a->connect_error); }
+        $result = $conn_a->query("SELECT nb_guid FROM Actions where type='notebook' and rule_id=" . $rule_id);
+        if ($result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) {
+                $new_nb_guid = $row["nb_guid"];
+            }
+        }
+        $conn_a->close();
+        echo "\n -- getNewNotebook ran -- new_nb_guid='".$new_nb_guid."' \n";
+        return $new_nb_guid;
     }
 
     // A global exception handler for our program so that error messages all go to the console
@@ -102,8 +118,15 @@
                 }
 		        $counter ++; $total_notes_updated ++;
 
+                //if a new NB is selected via action, use it, otherwise use default
+                $new_nb_guid = getNewNotebook($row["id"], $servername, $username, $password, $dbname);
+                if(strlen($new_nb_guid)<1){
+                    $new_nb_guid = $notebook_working;
+                }
+
                 echo "... Note: " . $note->title . " [" . $note->guid . "]" . "\n";
                 $updated_note = new Note();
+                $updated_note->notebookGuid = $new_nb_guid; // required field
                 $updated_note->guid = $note->guid; // required field
                 $updated_note->title = $note->title; // required field
                 $updated_note->tagGuids = $note->tagGuids; // keep the same tags in place

@@ -24,9 +24,9 @@
             echo "<input type=\"hidden\" name=\"action\" value=\"save\"> <br />";
             // ====================================
             echo "<input value=\"Save\" type=\"submit\">";
-            echo "<br /><br /><b><u>Actions</u></b><br />";
+            echo "<br /><br /><b><u>Manage Actions</u></b><br />";
             echo "<ul>";
-
+            echo "<li>Add a new Action (not done!)</li>";
             $conn2 = $conn;
             //$counter_action = 0;
             $sql = "select * from Actions where rule_id = " . $row_rule["id"];
@@ -42,6 +42,7 @@
                     echo "</li>";
                 }
             }
+            echo "</ul>";
         }
     }
     echo "</form>";
