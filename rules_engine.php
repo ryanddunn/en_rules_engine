@@ -17,7 +17,7 @@
         $tag_array = array();
         $conn_a = new mysqli($servername, $username, $password, $dbname);
         if ($conn_a->connect_error) {die("Connection failed: " . $conn_a->connect_error); }
-        $result = $conn_a->query("SELECT tag_name FROM Actions where type='tag' and rule_id=" . $rule_id);
+        $result = $conn_a->query("SELECT tag_name FROM Actions where rule_id=" . $rule_id);
         if ($result->num_rows > 0) {
             while($row = $result->fetch_assoc()) {
                 array_push($tag_array, $row["tag_name"]);
@@ -32,7 +32,7 @@
         $new_nb_guid = "";
         $conn_a = new mysqli($servername, $username, $password, $dbname);
         if ($conn_a->connect_error) {die("Connection failed: " . $conn_a->connect_error); }
-        $result = $conn_a->query("SELECT nb_guid FROM Actions where type='notebook' and rule_id=" . $rule_id);
+        $result = $conn_a->query("SELECT nb_guid FROM Rules where id=" . $rule_id);
         if ($result->num_rows > 0) {
             while($row = $result->fetch_assoc()) {
                 $new_nb_guid = $row["nb_guid"];
