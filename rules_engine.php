@@ -39,7 +39,7 @@
             }
         }
         $conn_a->close();
-        echo "\n -- getNewNotebook ran -- new_nb_guid='".$new_nb_guid."' \n";
+        // echo "\n -- getNewNotebook ran -- new_nb_guid='".$new_nb_guid."' \n";
         return $new_nb_guid;
     }
 
@@ -59,6 +59,8 @@
     }
     set_exception_handler('en_exception_handler');
 
+
+    // DUPLICATED?!?! SEE BELOW ...
     // ======================================================================================
     // ======================================================================================
     if($dev_mode){
@@ -79,7 +81,7 @@
     //print "Is my Evernote API version up to date?  " . $versionOK . "\n\n";
     if ($versionOK == 0) { exit(1); }
 
-    $noteStore = $client->getNoteStore();
+    $noteStore = $client->getNoteStore(); // CHECK ME - is this line really needed??
     // ===============================================
     if($dev_mode){ echo "*** DEV MODE *** \n"; }
 
